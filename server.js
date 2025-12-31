@@ -13,8 +13,15 @@ connectDB();
 const app = express();
 
 app.use(
-  cors({ origin: "https://prabhas-user-management-frontend.vercel.app/" })
+  cors({
+    origin: "https://prabhas-user-management-frontend.vercel.app",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
 );
+
+app.options("*", cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
