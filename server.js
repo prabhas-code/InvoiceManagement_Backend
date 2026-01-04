@@ -1,36 +1,35 @@
 import express from "express";
+import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import connectDB from "./config/db.js";
 
-import authRoutes from "./routes/authRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import adminRoutes from "./routes/adminRoutes.js";
+// Routes
+import authRoutes from "./routes/auth.routes.js";
+import invoiceRoutes from "./routes/invoice.routes.js";
 
 dotenv.config();
-connectDB();
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-app.use(
-  cors({
-    origin: "https://prabhas-user-management-frontend.vercel.app",
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
-
-app.options("*", cors());
+app.use(cors({ origin: "http://localhost:5174/" }));
 app.use(express.json());
 
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/admin", adminRoutes);
+app.use("/auth", authRoutes);
+app.use("/invoices", invoiceRoutes);
 
-app.get("/", (req, res) => {
-  res.send("User Management API running");
-});
+const startServer = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("MongoDB connected");
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Server startup failed:", error.message);
+    process.exit(1);
+  }
+};
+
+startServer();
