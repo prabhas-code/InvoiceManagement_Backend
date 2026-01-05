@@ -14,28 +14,9 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // allow server-to-server & tools like Postman
-      if (!origin) return callback(null, true);
-
-      if (
-        origin === "http://localhost:5173" ||
-        origin === "https://prabhas-user-management-frontend.vercel.app" ||
-        origin.endsWith(".vercel.app")
-      ) {
-        return callback(null, true);
-      }
-
-      return callback(new Error("Not allowed by CORS"));
-    },
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    origin: [
-      "http://localhost:5173",
-      "https://prabhas-user-management-frontend.vercel.app/",
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
   })
 );
 
